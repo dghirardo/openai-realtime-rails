@@ -12,7 +12,6 @@ gem "sprockets-rails"
 gem "sqlite3", ">= 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -65,3 +64,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "falcon", "~> 0.48.3"

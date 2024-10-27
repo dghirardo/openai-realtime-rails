@@ -101,6 +101,11 @@ GEM
     async-service (0.12.0)
       async
       async-container (~> 0.16)
+    async-websocket (0.30.0)
+      async-http (~> 0.76)
+      protocol-http (~> 0.34)
+      protocol-rack (~> 0.7)
+      protocol-websocket (~> 0.17)
     base64 (0.2.0)
     bigdecimal (3.1.8)
     bindex (0.8.1)
@@ -220,6 +225,8 @@ GEM
     protocol-rack (0.10.1)
       protocol-http (~> 0.37)
       rack (>= 1.0)
+    protocol-websocket (0.20.1)
+      protocol-http (~> 0.2)
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
@@ -337,6 +344,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  async-websocket (~> 0.30.0)
   bootsnap
   capybara
   debug

@@ -66,3 +66,5 @@ group :test do
 end
 
 gem "falcon", "~> 0.48.3"
+
+gem "async-websocket", "~> 0.30.0"

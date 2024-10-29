@@ -39,9 +39,6 @@ class WebsocketsController < ApplicationController
       # Establish connection to OpenAI WebSocket
       openai_connection = Async::WebSocket::Client.connect(endpoint, headers: headers)
       Rails.logger.info "Connected to OpenAI for client #{client_connection.object_id}"
-      
-      # Notify client that the bridge is established
-      client_connection.write("Connected to OpenAI")
 
       # Start handling communication in parallel tasks
       barrier.async { handle_client_to_openai(client_connection, openai_connection) }
@@ -66,8 +63,17 @@ class WebsocketsController < ApplicationController
         Rails.logger.info "[Client #{client_connection.object_id}] Received: #{client_message.inspect}"
 
         # Prepare and send the message to OpenAI
-        formatted_message = format_message_for_openai(client_message)
+        formatted_message = format_message_for_openai(client_message.buffer)
         openai_connection.write(Protocol::WebSocket::TextMessage.generate(formatted_message))
+
+        # Force OpenAI to generate a response
+        openai_connection.write(Protocol::WebSocket::TextMessage.generate({
+          type: "response.create",
+          response: {
+            modalities: ["text"]
+          }
+        }))
+
         openai_connection.flush
       end
     rescue => e
@@ -95,16 +101,22 @@ class WebsocketsController < ApplicationController
     end
   end
 
-  # Format the message to be sent to OpenAI, ensuring valid instructions
+  # Format the message to be sent to OpenAI
   def format_message_for_openai(client_message)
-    instructions = client_message.buffer.strip
-    raise "Instructions cannot be empty" if instructions.empty?
+    trimmed_message = client_message.strip
+    raise "Instructions cannot be empty" if trimmed_message.empty?
 
     {
-      type: "response.create",
-      response: {
-        modalities: ["text"],
-        instructions: instructions
+      type: "conversation.item.create",
+      item: {
+        type: "message",
+        role: "user",
+        content: [
+          {
+            type: "input_text",
+            text: trimmed_message
+          }
+        ]
       }
     }
   end

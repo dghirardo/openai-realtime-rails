@@ -90,9 +90,13 @@ class WebsocketsController < ApplicationController
       while (openai_message = openai_connection.read)
         Rails.logger.info "[Client #{client_connection.object_id}] OpenAI message: #{openai_message.inspect}"
 
+        parsed_message = JSON.parse(openai_message.buffer)
+        
         # Forward the message to the client
-        client_connection.write(openai_message)
-        client_connection.flush
+        if ["response.text.delta", "response.text.done"].include?(parsed_message["type"])
+          client_connection.write(openai_message)
+          client_connection.flush
+        end
       end
     rescue => e
       Rails.logger.error "[Client #{client_connection.object_id}] Error handling OpenAI message: #{e.message}"

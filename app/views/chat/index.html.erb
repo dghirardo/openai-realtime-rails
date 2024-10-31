@@ -1,0 +1,22 @@
+<div class="container d-flex flex-column" data-controller="message" style="height: 100vh;">
+  <div class="row justify-content-center flex-grow-1 overflow-auto">
+    <div class="col-12 col-sm-10 col-md-8">
+      <div class="d-flex flex-column mt-4 mt-md-5" data-message-target="chat">
+        <!-- Chat messages will be appended here -->
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8">
+        <form data-action="submit->message#sendMessage" class="py-5">
+          <label for="message_input" class="form-label">Send a message to OpenAI:</label>
+          <div class="input-group">
+            <input type="text" id="message_input" class="form-control" placeholder="Write here..." data-message-target="input">            
+            <button type="submit" class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
